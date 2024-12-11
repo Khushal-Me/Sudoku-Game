@@ -1,4 +1,4 @@
-# Sudoku Game 🎲
+# Sudoku 🎲
 
 A modern, responsive Sudoku game built with HTML, Tailwind CSS, and JavaScript, featuring dark mode, high score tracking, and customizable difficulty settings.
 
