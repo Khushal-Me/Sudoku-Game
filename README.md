@@ -15,7 +15,7 @@ A modern, responsive Sudoku game built with HTML, Tailwind CSS, and JavaScript, 
 * **Intuitive UI:**
    * Highlight matching numbers for better visibility
    * Timer and mistake counter to track progress
-   * Buttons for hints, undo, and resetting the game
+   * Buttons for undoing, and resetting the game
 
 ## 🚀 Technologies Used
 
