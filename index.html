@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex flex-col items-center justify-center transition-colors duration-200">
+    <div class="text-center mb-8 w-full px-4 max-w-4xl">
+        <div class="flex justify-between w-full mb-4">
+            <div class="flex gap-2">
+                <button id="settingsBtn" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full p-2">
+                    <svg class="w-6 h-6 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </button>
+                <button id="highScoreBtn" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full p-2">
+                    <svg class="w-6 h-6 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                    </svg>
+                </button>
+            </div>
+            <button id="darkModeToggle" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full p-2">
+                <svg class="w-6 h-6 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                </svg>
+                <svg class="w-6 h-6 hidden dark:block text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
+                </svg>
+            </button>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">Sudoku</h1>
+        <div class="flex gap-4 justify-center mb-4 flex-wrap">
+            <button id="newGameBtn" class="bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 text-white font-bold py-2 px-4 rounded">
+                New Game
+            </button>
+            <div class="bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded py-2 px-4">
+                Time: <span id="timer" class="font-bold">0</span>s
+            </div>
+            <button id="checkBtn" class="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                Check Solution
+            </button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">Game Settings</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-200 mb-2">Difficulty</label>
+                    <select id="difficultySelect" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-4 mt-6">
+                    <button id="cancelSettings" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                        Cancel
+                    </button>
+                    <button id="saveSettings" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded">
+                        Save & New Game
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- High Scores Modal -->
+    <div id="highScoreModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">High Scores</h2>
+                <button id="closeHighScores" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex gap-4 mb-2">
+                    <button id="easyScores" class="flex-1 py-2 px-4 bg-blue-500 text-white rounded">Easy</button>
+                    <button id="mediumScores" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded">Medium</button>
+                    <button id="hardScores" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded">Hard</button>
+                </div>
+                <div class="space-y-2" id="highScoreList">
+                    <!-- High scores will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="board" class="grid grid-cols-9 gap-1 bg-gray-300 dark:bg-gray-700 p-4 rounded-lg shadow-lg mb-6"></div>
+
+    <!-- Number Pad -->
+    <div class="grid grid-cols-5 gap-2 max-w-lg mx-auto px-4">
+        <button class="number-btn bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 text-white font-bold py-3 px-4 rounded">1</button>
+        <button class="number-btn bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 text-white font-bold py-3 px-4 rounded">2</button>
+        <button class="number-btn bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 text-white font-bold py-3 px-4 rounded">3</button>
+        <button class="number-btn bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 text-white font-bold py-3 px-4 rounded">4</button>
+        <button class="number-btn bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 text-white font-bold py-3 px-4 rounded">5</button>
+        <button class="number-btn bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 text-white font-bold py-3 px-4 rounded">6</button>
+        <button class="number-btn bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 text-white font-bold py-3 px-4 rounded">7</button>
+        <button class="number-btn bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 text-white font-bold py-3 px-4 rounded">8</button>
+        <button class="number-btn bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 text-white font-bold py-3 px-4 rounded">9</button>
+        <button id="undoBtn" class="bg-gray-500 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-700 text-white font-bold py-3 px-4 rounded">↩</button>
+    </div>
+</body>
+<script src="game.js"></script>
+</html>
